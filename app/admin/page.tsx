@@ -42,7 +42,6 @@ export default async function AdminDashboardPage() {
       prisma.article.aggregate({ _sum: { views: true } }),
       prisma.user.count({ where: { role: "REPORTER" } }),
       prisma.article.findMany({
-        include: { category: true },
         orderBy: { created_at: "desc" },
         take: 5,
         select: { id: true, title: true, published_at: true, views: true, category: { select: { name: true } } },
