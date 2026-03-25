@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  REPORTER
+  USER
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id         String    @id @default(cuid())
+  name       String
+  email      String    @unique
+  password   String?
+  role       Role      @default(USER)
+  points     Int       @default(0)
+  created_at DateTime  @default(now())
+  articles   Article[]
+  comments   Comment[]
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String
+  slug     String    @unique
+  articles Article[]
+}
+
+model Article {
+  id           String    @id @default(cuid())
+  title        String
+  slug         String    @unique
+  summary      String
+  content      String
+  imageUrl     String?
+  authorId     String
+  categoryId   String
+  is_breaking  Boolean   @default(false)
+  views        Int       @default(0)
+  seo_title    String?
+  seo_keywords String?
+  published_at DateTime?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  author       User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category     Category  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  comments     Comment[]
+  translations ArticleTranslation[]
+  polls        Poll[]
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([published_at])
+}
+
+model Comment {
+  id        String        @id @default(cuid())
+  content   String
+  status    CommentStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  authorId  String
+  articleId String
+  author    User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  article   Article       @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId])
+  @@index([authorId])
+  @@index([status])
+}
+
+model EPaper {
+  id        String   @id @default(cuid())
+  title     String
+  date      DateTime
+  pdfUrl    String
+  createdAt DateTime @default(now())
+
+  @@index([date])
+}
+
+model ArticleTranslation {
+  id        String   @id @default(cuid())
+  language  String
+  title     String
+  summary   String
+  content   String
+  createdAt DateTime @default(now())
+  articleId String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([articleId, language])
+  @@index([articleId])
+}
+
+model Poll {
+  id        String       @id @default(cuid())
+  question  String
+  createdAt DateTime     @default(now())
+  articleId String?
+  article   Article?     @relation(fields: [articleId], references: [id], onDelete: SetNull)
+  options   PollOption[]
+
+  @@index([articleId])
+}
+
+model PollOption {
+  id     String @id @default(cuid())
+  text   String
+  votes  Int    @default(0)
+  pollId String
+  poll   Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
+
+  @@index([pollId])
+}
+
+enum LiveEventStatus {
+  ACTIVE
+  ENDED
+}
+
+model LiveEvent {
+  id        String          @id @default(cuid())
+  title     String
+  slug      String          @unique
+  status    LiveEventStatus @default(ACTIVE)
+  createdAt DateTime        @default(now())
+  updates   LiveUpdate[]
+
+  @@index([status])
+}
+
+model LiveUpdate {
+  id        String    @id @default(cuid())
+  content   String
+  isPinned  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  eventId   String
+  event     LiveEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+}
+
+model PushSubscriber {
+  id        String   @id @default(cuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+}
