@@ -77,13 +77,13 @@ export default function NotFoundPage() {
             <Home className="size-4" />
             Return to Frontpage
           </Link>
-          <button
-            onClick={() => window.history.back()}
+          <Link
+            href="/"
             className="flex w-full items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-6 py-3 text-sm font-semibold text-neutral-600 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 sm:w-auto"
           >
             <ArrowLeft className="size-4" />
             Go Back
-          </button>
+          </Link>
         </div>
       </div>
     </main>
