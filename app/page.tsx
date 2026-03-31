@@ -2,6 +2,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { BreakingNewsTicker } from "@/components/news/breaking-news-ticker";
 import { HeroGrid } from "@/components/news/hero-grid";
 import { VideoNewsStrip } from "@/components/news/video-news-strip";
+import { DailyHoroscope } from "@/components/news/daily-horoscope";
 import { getNavSections } from "@/lib/navigation";
 import { getBreakingNews, getPublishedArticles } from "@/lib/services/article.service";
 import { prisma } from "@/lib/prisma";
@@ -156,6 +157,7 @@ export default async function Home() {
           </section>
         )}
         <VideoNewsStrip />
+        <DailyHoroscope />
       </main>
     </div>
   );

@@ -82,13 +82,22 @@ model Comment {
 }
 
 model EPaper {
-  id        String   @id @default(cuid())
-  title     String
-  date      DateTime
-  pdfUrl    String
-  createdAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  title        String
+  date         DateTime
+  pdfUrl       String
+  createdAt    DateTime @default(now())
+
+  // ── V2 fields — all nullable for zero-downtime migration ──────────────────
+  // Existing rows remain 100% valid. New fields are NULL until a V2 upload
+  // populates them. The API and viewer check for null before using them.
+  city         String?  // e.g. "pune", "mumbai", "nagpur"
+  thumbnailUrl String?  // cover image shown in the edition grid
+  pageImages   Json?    // jsonb array of page image URLs: ["url1", "url2", ...]
+  pageCount    Int?     // derived from pageImages.length, stored for fast reads
 
   @@index([date])
+  @@index([city])  // enables fast city-filtered archive queries
 }
 
 model ArticleTranslation {

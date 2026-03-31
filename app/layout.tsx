@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Merriweather } from "next/font/google";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { AppToaster } from "@/components/ui/toaster";
+import { CricketWidget } from "@/components/news/cricket-widget";
 import "./globals.css";
 
 const inter = Inter({
@@ -42,6 +43,7 @@ export default function RootLayout({
         <ThemeProvider>
           {children}
           <AppToaster />
+          <CricketWidget />
         </ThemeProvider>
       </body>
     </html>
