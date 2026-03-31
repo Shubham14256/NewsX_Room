@@ -11,10 +11,19 @@ function isAuthorized(role?: string): boolean {
   return ALLOWED_ROLES.includes(role as (typeof ALLOWED_ROLES)[number]);
 }
 
+// ── V1 fields: required (backwards-compatible with existing admin UI) ─────────
+// ── V2 fields: all optional — legacy payloads omit them without error ─────────
 const createEPaperSchema = z.object({
-  title: z.string().min(2, "Title must be at least 2 characters."),
-  date: z.string().min(1, "Date is required."),
-  pdfUrl: z.string().url("Must be a valid URL."),
+  // V1 — required, unchanged
+  title:        z.string().min(2, "Title must be at least 2 characters."),
+  date:         z.string().min(1, "Date is required."),
+  pdfUrl:       z.string().url("Must be a valid URL."),
+
+  // V2 — optional, safe to omit
+  city:         z.string().min(1).optional(),
+  thumbnailUrl: z.string().url("thumbnailUrl must be a valid URL.").optional(),
+  pageImages:   z.array(z.string().url()).min(1).optional(),
+  pageCount:    z.number().int().positive().optional(),
 });
 
 export async function GET() {
@@ -49,9 +58,17 @@ export async function POST(request: NextRequest) {
 
     const epaper = await prisma.ePaper.create({
       data: {
-        title: parsed.data.title.trim(),
-        date: new Date(parsed.data.date),
+        // V1 fields — always present
+        title:  parsed.data.title.trim(),
+        date:   new Date(parsed.data.date),
         pdfUrl: parsed.data.pdfUrl.trim(),
+
+        // V2 fields — only written when the payload includes them.
+        // undefined values are ignored by Prisma (column stays NULL).
+        ...(parsed.data.city         !== undefined && { city:         parsed.data.city.trim()         }),
+        ...(parsed.data.thumbnailUrl !== undefined && { thumbnailUrl: parsed.data.thumbnailUrl.trim() }),
+        ...(parsed.data.pageImages   !== undefined && { pageImages:   parsed.data.pageImages,
+                                                        pageCount:    parsed.data.pageCount ?? parsed.data.pageImages.length }),
       },
     });
 

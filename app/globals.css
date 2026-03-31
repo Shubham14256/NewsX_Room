@@ -28,15 +28,33 @@ body {
 }
 
 .ticker-track {
+  display: flex;
+  width: max-content;
   white-space: nowrap;
   animation: ticker-scroll 32s linear infinite;
 }
 
 @keyframes ticker-scroll {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Stock market ticker — faster, independent speed */
+.stock-ticker-track {
+  /* Must be max-content so the flex row expands beyond the clipping container.
+     Without this, translateX(-50%) has nothing to scroll — the track never
+     overflows and the animation appears frozen. */
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  animation: stock-ticker-scroll 55s linear infinite;
+}
+
+.stock-ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes stock-ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }

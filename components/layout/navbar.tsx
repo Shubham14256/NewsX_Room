@@ -6,6 +6,8 @@ import { Menu, X, Newspaper, Video, ShoppingBag, Zap, Sun, Search, Archive } fro
 
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { PositiveNewsToggle } from "@/components/news/positive-news-toggle";
+import { StockTicker } from "@/components/news/stock-ticker";
+import { LoyaltyCounter } from "@/components/news/loyalty-counter";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { NavSection } from "@/types/news";
@@ -75,6 +77,7 @@ export function Navbar({ sections }: NavbarProps) {
               ))}
             </div>
             <ThemeToggle />
+            <LoyaltyCounter />
             <Link href="/login">
               <Button size="sm">Login</Button>
             </Link>
@@ -94,6 +97,9 @@ export function Navbar({ sections }: NavbarProps) {
           ))}
         </nav>
       </header>
+
+      {/* Live Stock Market Ticker — Phase 2 */}
+      <StockTicker />
 
       {/* Mobile full-screen drawer */}
       {menuOpen && (

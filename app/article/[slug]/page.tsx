@@ -12,6 +12,8 @@ import { PerspectiveTabs } from "@/components/news/perspective-tabs";
 import { FactCheckBadge } from "@/components/news/fact-check-badge";
 import { AddToQueueButton, MiniPlayer } from "@/components/news/listen-queue";
 import { AiRecommendations } from "@/components/news/ai-recommendations";
+import { InteractivePoll } from "@/components/news/interactive-poll";
+import { RewardTrigger } from "@/components/news/reward-trigger";
 import { getArticleBySlug } from "@/lib/services/article.service";
 import { getNavSections } from "@/lib/navigation";
 import { authOptions } from "@/lib/auth";
@@ -111,6 +113,8 @@ export default async function ArticleReaderPage({ params }: ArticlePageProps) {
 
       <AiRecommendations />
 
+      <InteractivePoll articleSlug={slug} />
+
       <CommentSection
         articleId={article.id}
         initialComments={comments}
@@ -118,6 +122,7 @@ export default async function ArticleReaderPage({ params }: ArticlePageProps) {
       />
       <PushSubscribePrompt />
       <MiniPlayer />
+      <RewardTrigger articleSlug={slug} />
     </main>
     </div>
   );
