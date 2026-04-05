@@ -3,6 +3,7 @@ import { Inter, Merriweather } from "next/font/google";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { AppToaster } from "@/components/ui/toaster";
 import { CricketWidget } from "@/components/news/cricket-widget";
+import { Footer } from "@/components/layout/footer";
 import "./globals.css";
 
 const inter = Inter({
@@ -42,6 +43,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-50">
         <ThemeProvider>
           {children}
+          <Footer />
           <AppToaster />
           <CricketWidget />
         </ThemeProvider>

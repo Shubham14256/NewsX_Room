@@ -3,6 +3,7 @@ import { BreakingNewsTicker } from "@/components/news/breaking-news-ticker";
 import { HeroGrid } from "@/components/news/hero-grid";
 import { VideoNewsStrip } from "@/components/news/video-news-strip";
 import { DailyHoroscope } from "@/components/news/daily-horoscope";
+import { ArticleFeed } from "@/components/news/article-feed";
 import { getNavSections } from "@/lib/navigation";
 import { getBreakingNews, getPublishedArticles } from "@/lib/services/article.service";
 import { prisma } from "@/lib/prisma";
@@ -73,6 +74,9 @@ export default async function Home() {
 
   const featuredArticle = articleCards[0];
   const trendingArticles = articleCards.slice(1, 4);
+  // Articles 4–7 seed the infinite feed. Their published_at becomes the initial cursor.
+  const feedSeedArticles = articleCards.slice(4);
+  const initialCursor    = publishedArticles[7]?.published_at?.toISOString() ?? null;
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
@@ -158,6 +162,8 @@ export default async function Home() {
         )}
         <VideoNewsStrip />
         <DailyHoroscope />
+        {/* Infinite scroll feed — seeds with SSR articles 4–7, then cursor-fetches from the API */}
+        <ArticleFeed initialArticles={feedSeedArticles} initialCursor={initialCursor} />
       </main>
     </div>
   );
