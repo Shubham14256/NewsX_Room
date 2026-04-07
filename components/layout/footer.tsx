@@ -264,7 +264,7 @@ export function Footer() {
 
           {/* Copyright */}
           <p className="text-xs text-neutral-500">
-            © {YEAR} Biskranti IT Innovation Pvt. Ltd. | Powered by Shubhstra Tech Ltd. All rights reserved.
+            © {YEAR} Bizkranti IT Innovation Pvt. Ltd. | Powered by Shubhstra Tech Ltd. All rights reserved.
           </p>
 
           {/* Legal quick links */}
