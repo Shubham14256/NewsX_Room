@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/layout/theme-provider";
 import { AppToaster } from "@/components/ui/toaster";
 import { CricketWidget } from "@/components/news/cricket-widget";
 import { Footer } from "@/components/layout/footer";
+import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import "./globals.css";
 
 const inter = Inter({
@@ -44,6 +45,7 @@ export default function RootLayout({
         <ThemeProvider>
           {children}
           <Footer />
+          <MobileBottomNav />
           <AppToaster />
           <CricketWidget />
         </ThemeProvider>

@@ -266,6 +266,10 @@ function AdminEPaperPageInner() {
       // ── Success — clear committed list (nothing to roll back) ───────────
       committedUrls.length = 0;
 
+      // ── Elite slicing pipeline BYPASSED (Phase 2 — pending DB tier upgrade)
+      // Slice endpoint preserved at /api/epaper/slice but not called here.
+      // Re-enable by uncommenting the block below when ready.
+
       toast.success("🎉 E-Paper edition published!", {
         description: `${title} — ${pages.length} pages`,
       });

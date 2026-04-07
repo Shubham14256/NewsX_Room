@@ -21,6 +21,11 @@ export const prisma =
   new PrismaClient({
     adapter,
     log: ["warn", "error"],
+    // Query-level timeout: abort any query exceeding 8s
+    // Prevents slow DB queries from hanging API routes indefinitely
+    transactionOptions: {
+      timeout: 8000,
+    },
   });
 
 if (process.env.NODE_ENV !== "production") {

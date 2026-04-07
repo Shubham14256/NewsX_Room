@@ -8,6 +8,7 @@ import {
   MapPin, Calendar, FileText, ZoomIn, ZoomOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { EPaperEliteViewer } from "@/components/news/epaper-elite-viewer";
 import type { EPaperEdition } from "@/app/epaper/page";
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -99,81 +100,79 @@ export function EPaperViewer({ editions, initialEditionId }: EPaperViewerProps) 
         </div>
 
         {/* ── V2: Image-array viewer ──────────────────────────────────── */}
-        {isV2 && currentImg ? (
-          <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-950 shadow-2xl dark:border-neutral-800">
-            {/* Page image */}
-            <div
-              className={cn(
-                "relative mx-auto transition-all duration-300",
-                zoomed ? "max-w-none cursor-zoom-out" : "max-w-3xl cursor-zoom-in",
-              )}
-              style={{ minHeight: "60vh" }}
-              onClick={() => setZoomed((z) => !z)}
-            >
-              <Image
-                key={currentImg}
-                src={currentImg}
-                alt={`${active.title} — Page ${pageIndex + 1}`}
-                width={1200}
-                height={1600}
-                className="h-auto w-full object-contain"
-                priority={pageIndex === 0}
-                unoptimized={currentImg.startsWith("blob:")}
-              />
-
-              {/* Zoom hint */}
-              <div className="absolute right-3 top-3 rounded-full bg-black/50 p-1.5 backdrop-blur-sm">
-                {zoomed
-                  ? <ZoomOut className="size-4 text-white" />
-                  : <ZoomIn  className="size-4 text-white" />}
-              </div>
-            </div>
-
-            {/* Navigation bar */}
-            <div className="flex items-center justify-between border-t border-neutral-800 bg-neutral-900 px-4 py-3">
-              <button
-                onClick={prevPage}
-                disabled={pageIndex === 0}
-                aria-label="Previous page"
-                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-neutral-300 transition-colors hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-30"
+        {/* Elite viewer BYPASSED — re-enable in Phase 2 when DB tier upgraded */}
+        {isV2 ? (
+          // ── Standard image viewer (always active during bypass) ──────────
+          (<div className="overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-950 shadow-2xl dark:border-neutral-800">
+              {/* Page image */}
+              <div
+                className={cn(
+                  "relative mx-auto transition-all duration-300",
+                  zoomed ? "max-w-none cursor-zoom-out" : "max-w-3xl cursor-zoom-in",
+                )}
+                style={{ minHeight: "60vh" }}
+                onClick={() => setZoomed((z) => !z)}
               >
-                <ChevronLeft className="size-4" /> Prev
-              </button>
-
-              {/* Page strip — thumbnail dots */}
-              <div className="flex items-center gap-1.5 overflow-x-auto px-2">
-                {pages.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={(e) => { e.stopPropagation(); setPageIndex(i); }}
-                    aria-label={`Go to page ${i + 1}`}
-                    className={cn(
-                      "h-1.5 rounded-full transition-all duration-200",
-                      i === pageIndex
-                        ? "w-6 bg-red-500"
-                        : "w-1.5 bg-neutral-600 hover:bg-neutral-400",
-                    )}
-                  />
-                ))}
+                <Image
+                  key={currentImg}
+                  src={currentImg}
+                  alt={`${active.title} — Page ${pageIndex + 1}`}
+                  width={1200}
+                  height={1600}
+                  className="h-auto w-full object-contain"
+                  priority={pageIndex === 0}
+                  unoptimized={currentImg.startsWith("blob:")}
+                />
+                <div className="absolute right-3 top-3 rounded-full bg-black/50 p-1.5 backdrop-blur-sm">
+                  {zoomed
+                    ? <ZoomOut className="size-4 text-white" />
+                    : <ZoomIn  className="size-4 text-white" />}
+                </div>
               </div>
 
-              <button
-                onClick={nextPage}
-                disabled={pageIndex === totalPages - 1}
-                aria-label="Next page"
-                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-neutral-300 transition-colors hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-30"
-              >
-                Next <ChevronRight className="size-4" />
-              </button>
-            </div>
+              {/* Navigation bar */}
+              <div className="flex items-center justify-between border-t border-neutral-800 bg-neutral-900 px-4 py-3">
+                <button
+                  onClick={prevPage}
+                  disabled={pageIndex === 0}
+                  aria-label="Previous page"
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-neutral-300 transition-colors hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  <ChevronLeft className="size-4" /> Prev
+                </button>
+                <div className="flex items-center gap-1.5 overflow-x-auto px-2">
+                  {pages.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={(e) => { e.stopPropagation(); setPageIndex(i); }}
+                      aria-label={`Go to page ${i + 1}`}
+                      className={cn(
+                        "h-1.5 rounded-full transition-all duration-200",
+                        i === pageIndex
+                          ? "w-6 bg-red-500"
+                          : "w-1.5 bg-neutral-600 hover:bg-neutral-400",
+                      )}
+                    />
+                  ))}
+                </div>
+                <button
+                  onClick={nextPage}
+                  disabled={pageIndex === totalPages - 1}
+                  aria-label="Next page"
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-neutral-300 transition-colors hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  Next <ChevronRight className="size-4" />
+                </button>
+              </div>
 
-            {/* Page counter */}
-            <div className="bg-neutral-950 py-2 text-center">
-              <span className="font-mono text-xs font-semibold text-neutral-500">
-                Page {pageIndex + 1} of {totalPages}
-              </span>
+              {/* Page counter */}
+              <div className="bg-neutral-950 py-2 text-center">
+                <span className="font-mono text-xs font-semibold text-neutral-500">
+                  Page {pageIndex + 1} of {totalPages}
+                </span>
+              </div>
             </div>
-          </div>
+          )
         ) : (
           // ── V1 legacy fallback: no pageImages, show PDF download ────────
           <div className="flex flex-col items-center justify-center gap-5 rounded-2xl border border-neutral-200 bg-neutral-50 py-20 text-center dark:border-neutral-800 dark:bg-neutral-900">

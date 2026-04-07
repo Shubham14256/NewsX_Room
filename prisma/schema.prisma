@@ -60,6 +60,7 @@ model Article {
   comments     Comment[]
   translations ArticleTranslation[]
   polls        Poll[]
+  epaperRegions EPaperRegion[]
 
   @@index([authorId])
   @@index([categoryId])
@@ -96,8 +97,34 @@ model EPaper {
   pageImages   Json?    // jsonb array of page image URLs: ["url1", "url2", ...]
   pageCount    Int?     // derived from pageImages.length, stored for fast reads
 
+  // ── Elite viewer fields — nullable, zero-breakage ─────────────────────────
+  dziPages     Json?    // jsonb array of DZI manifest URLs per page: ["url1", ...]
+
+  regions      EPaperRegion[]
+
   @@index([date])
-  @@index([city])  // enables fast city-filtered archive queries
+  @@index([city])
+}
+
+// ── Article clipping regions — coordinate map for Elite viewer ────────────────
+// x, y, w, h stored as 0.0–1.0 ratios of image dimensions.
+// Device-independent: multiply by rendered image size at runtime for hit detection.
+model EPaperRegion {
+  id         String   @id @default(cuid())
+  ePaperId   String
+  pageIndex  Int                  // 0-indexed page number
+  x          Float                // left edge ratio
+  y          Float                // top edge ratio
+  w          Float                // width ratio
+  h          Float                // height ratio
+  articleId  String?              // nullable — some regions are ads/headers
+  label      String?              // fallback label if no article linked
+  createdAt  DateTime @default(now())
+
+  ePaper     EPaper   @relation(fields: [ePaperId], references: [id], onDelete: Cascade)
+  article    Article? @relation(fields: [articleId], references: [id], onDelete: SetNull)
+
+  @@index([ePaperId, pageIndex])
 }
 
 model ArticleTranslation {

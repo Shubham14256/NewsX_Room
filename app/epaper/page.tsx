@@ -16,6 +16,14 @@ export interface EPaperEdition {
   thumbnailUrl: string | null;
   pageImages:   string[] | null;  // parsed from Json
   pageCount:    number | null;
+  // ── Elite viewer fields ──────────────────────────────────────────────────
+  dziPages:     string[] | null;  // DZI manifest URLs per page
+  regions:      Array<{
+    id: string; pageIndex: number;
+    x: number; y: number; w: number; h: number;
+    articleId: string | null; label: string | null;
+    article: { slug: string; title: string } | null;
+  }>;
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -29,9 +37,14 @@ export default async function EPaperPortalPage({ searchParams }: EPaperPageProps
 
   let editions: EPaperEdition[] = [];
   try {
-    const raw = await prisma.ePaper.findMany({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const raw = await (prisma.ePaper.findMany as any)({
       orderBy: { date: "desc" },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      include: {
+        regions: {
+          include: { article: { select: { slug: true, title: true } } },
+        },
+      },
     }) as any[];
 
     editions = raw.map((e) => ({
@@ -43,6 +56,10 @@ export default async function EPaperPortalPage({ searchParams }: EPaperPageProps
       thumbnailUrl: e.thumbnailUrl ?? null,
       pageImages:   Array.isArray(e.pageImages) ? (e.pageImages as string[]) : null,
       pageCount:    e.pageCount ?? null,
+      dziPages:     Array.isArray(e.dziPages)
+        ? (e.dziPages as (string | null)[]).filter((u): u is string => typeof u === "string")
+        : null,
+      regions:      e.regions ?? [],
     }));
   } catch (err) {
     console.error("EPaper fetch failed (DB cold start?):", err);
