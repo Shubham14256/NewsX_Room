@@ -1,7 +1,8 @@
 #  LIVE LINK : https://news-x-room-seven.vercel.app/
 
 
-<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/0c077d9e-55a7-4e02-88ba-004b09f9f009" />
+<img width="1896" height="931" alt="image" src="https://github.com/user-attachments/assets/15841181-b517-4f49-b4b2-f2578ef2418a" />
+
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
