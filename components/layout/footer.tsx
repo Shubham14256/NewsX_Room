@@ -264,7 +264,7 @@ export function Footer() {
 
           {/* Copyright */}
           <p className="text-xs text-neutral-500">
-            © {YEAR} Bizkranti IT Innovation Pvt. Ltd
+            © {YEAR} Shubhstra Tech Services Digital Media Pvt. Ltd
           .
           </p>
 
